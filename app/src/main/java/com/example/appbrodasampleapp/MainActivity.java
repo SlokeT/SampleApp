@@ -24,13 +24,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        AppBrodaPlacementHandler.initRemoteConfigAndSavePlacements(MainActivity.this);
-
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
             public void onInitializationComplete(InitializationStatus initializationStatus) {
             }
         });
+
+        AppBrodaPlacementHandler.initRemoteConfigAndSavePlacements(MainActivity.this);
     }
 
     public void bannerPage(View v){

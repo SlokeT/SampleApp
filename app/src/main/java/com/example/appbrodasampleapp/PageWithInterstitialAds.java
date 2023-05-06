@@ -18,24 +18,17 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
 public class PageWithInterstitialAds extends AppCompatActivity {
     InterstitialAd mInterstitialAd;
-    int index = 0;
+    String[] placement = AppBrodaPlacementHandler.loadPlacements("interstitialAds");
+    int interstitialIndex = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_page_with_interstitial_ads);
-
-        Intent i= getIntent();
-
         AdRequest adRequest = new AdRequest.Builder().build();
 
-        String[] placement = AppBrodaPlacementHandler.loadPlacements("interstitialAds");
-
-        //if(adUnits!=null &&  adUnits.length!=0) {
-            LoadAd(adRequest,placement);
-        //} else {
-        //}
+        LoadInterstitialAd(adRequest,placement);
 
         Button showAdButton = findViewById(R.id.showInterstitialAd);
         showAdButton.setOnClickListener(new View.OnClickListener() {
@@ -50,32 +43,32 @@ public class PageWithInterstitialAds extends AppCompatActivity {
     }
 
 
-    public void LoadAd(AdRequest adRequest, String[] placement){
+    public void LoadInterstitialAd(AdRequest adRequest, String[] placement){
         if(placement==null || placement.length==0) //wapper logic to handle errors
             return;
-        InterstitialAd.load(this,placement[index], adRequest,
+        InterstitialAd.load(this,placement[interstitialIndex], adRequest,
                 new InterstitialAdLoadCallback() {
                     @Override
                     public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
                         mInterstitialAd = interstitialAd;
-                        Toast.makeText(PageWithInterstitialAds.this, "Interstitial Ad Loaded @index: "+index,Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PageWithInterstitialAds.this, "Interstitial Ad Loaded @index: "+interstitialIndex,Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                        Toast.makeText(PageWithInterstitialAds.this, "Interstitial Ad Loading failed @index: "+index,Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PageWithInterstitialAds.this, "Interstitial Ad Loading failed @index: "+interstitialIndex,Toast.LENGTH_SHORT).show();
                         mInterstitialAd = null;
-                        loadNext(adRequest,placement);
+                        loadNextAd(adRequest,placement);
                     }
                 });
     }
 
-    public void loadNext(AdRequest adRequest, String[] adUnits){
-        if(index==adUnits.length){
-            index=0;
+    public void loadNextAd(AdRequest adRequest, String[] placement){
+        if(interstitialIndex==placement.length){
+            interstitialIndex=0;
             return;
         }
-        index++;
-        LoadAd(adRequest, adUnits);
+        interstitialIndex++;
+        LoadInterstitialAd(adRequest, placement);
     }
 }

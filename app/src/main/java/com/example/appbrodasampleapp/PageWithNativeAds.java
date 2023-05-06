@@ -21,7 +21,7 @@ import com.google.android.gms.ads.nativead.NativeAdOptions;
 public class PageWithNativeAds extends AppCompatActivity {
     private AdLoader adLoader;
     private String[] placement;
-    private int index = 0;
+    private int nativeIndex = 0;
 
     private boolean adFound = false;
     @Override
@@ -37,11 +37,9 @@ public class PageWithNativeAds extends AppCompatActivity {
     public void loadNativeAds(String[] placement){
         if(placement==null || placement.length==0) //wapper logic to handle errors
             return;
-        if(index>= placement.length)
-            return;
         NativeAdOptions adOptions =
                 new NativeAdOptions.Builder().setMediaAspectRatio(MediaAspectRatio.PORTRAIT).build();
-        adLoader = new AdLoader.Builder(this, placement[index]).forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+        adLoader = new AdLoader.Builder(this, placement[nativeIndex]).forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
                     @Override
                     public void onNativeAdLoaded(NativeAd nativeAd) {
                         Log.d("TAG","Native ad loaded");
@@ -54,7 +52,7 @@ public class PageWithNativeAds extends AppCompatActivity {
 
                         // Show the ad.
                         if(adLoader.isLoading()){
-                            Toast.makeText(PageWithNativeAds.this,"Native ads loading @index: "+index,Toast.LENGTH_SHORT).show();
+                            Toast.makeText(PageWithNativeAds.this,"Native ads loading @index: "+nativeIndex,Toast.LENGTH_SHORT).show();
                         } else {
 
                         }
@@ -66,7 +64,7 @@ public class PageWithNativeAds extends AppCompatActivity {
                 }).withAdListener(new AdListener() {
             @Override
             public void onAdFailedToLoad(LoadAdError adError) {
-                Toast.makeText(PageWithNativeAds.this,"Native ad loading failed @index: "+index,Toast.LENGTH_SHORT).show();
+                Toast.makeText(PageWithNativeAds.this,"Native ad loading failed @index: "+nativeIndex,Toast.LENGTH_SHORT).show();
                 loadNextAd();
             }
         }).withNativeAdOptions(adOptions
@@ -76,11 +74,11 @@ public class PageWithNativeAds extends AppCompatActivity {
     }
 
     private  void loadNextAd() { //triggers next ad load
-        if (index == placement.length) {
-            index = 0;
+        if (nativeIndex == placement.length) {
+            nativeIndex = 0;
             return;
         }
-        index++;
+        nativeIndex++;
         loadNativeAds(placement);
     }
 }
